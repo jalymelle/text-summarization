@@ -1,15 +1,8 @@
 from math import log10
-# Liste aus allen Sätzen: Vertices
-vertices = []
+from functions import get_sentences
 
-
-with open ('doc.txt', 'r', encoding='utf-8') as document:
-    paragraphs = document.readlines()
-    for paragraph in paragraphs: 
-        sentences = paragraph.split('.')
-        for sentence in sentences:
-            sentence = sentence.replace('\n', '')
-            vertices.append(sentence)
+# Text in Sätze aufteilen
+vertices = get_sentences('doc.txt')
 
 # Gemeinsame Wörter berechnen
 all_similarities = []

@@ -1,17 +1,9 @@
-# TODO: nltk.tokenize to split words
+from functions import get_sentences
 
-# Dokument einlesen und in Sätze aufteilen und diese Sätze in all_sentences speichern
-all_sentences = []
+# Text in Sätze aufteilen
+all_sentences = get_sentences('doc.txt')
 
 summary_length = 2
-
-with open ('doc.txt', 'r', encoding='utf-8') as document:
-    paragraphs = document.readlines()
-    for paragraph in paragraphs: 
-        sentences = paragraph.split('.')
-        for sentence in sentences:
-            sentence = sentence.replace('\n', '')
-            all_sentences.append(sentence)
 
 
 # Zählen wie oft jedes Wort vorkommt und diese Häufigkeit in word_frequencies abspeichern

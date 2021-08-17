@@ -1,19 +1,14 @@
 import os
 from math import log10, sqrt
 import numpy as np
+from functions import get_sentences
 
-vertices = []
+
 threshold = 0.1
 epsilon = 0.1
 
-# get sentences
-with open ('doc.txt', 'r', encoding='utf-8') as document:
-    paragraphs = document.readlines()
-    for paragraph in paragraphs: 
-        sentences = paragraph.split('.')
-        for sentence in sentences:
-            sentence = sentence.replace('\n', '')
-            vertices.append(sentence)
+# Text in Sätze aufteilen
+vertices = get_sentences('doc.txt')
 
 all_words = []
 directory = r'C:\Users\megan\Desktop\maturaarbeit\code\data\BBC News Summary\News Articles\business'

@@ -1,5 +1,3 @@
-# TODO: nltk.tokenize to split words
-
 # Dokument einlesen und in Sätze aufteilen und diese Sätze in all_sentences speichern
 all_sentences = []
 

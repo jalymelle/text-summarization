@@ -1,19 +1,13 @@
 import os
 from math import log10
+from functions import get_sentences
 
-all_sentences = []
-docs = ()
-# loop through all docs and create a set of all words
+# Text in Sätze aufteilen
+all_sentences = get_sentences('doc.txt')
 
 summary_length = 2
 
-with open ('doc.txt', 'r', encoding='utf-8') as document:
-    paragraphs = document.readlines()
-    for paragraph in paragraphs: 
-        sentences = paragraph.split('.')
-        for sentence in sentences:
-            sentence = sentence.replace('\n', '')
-            all_sentences.append(sentence)
+
 
 threshold = 0.1
 # create list of all words
