@@ -1,27 +1,11 @@
-from functions import get_sentences
+from functions import get_sentences, calculate_word_frequency
 
-# Text in Sätze aufteilen
-all_sentences = get_sentences('doc.txt')
-
+# Einstellungen
 summary_length = 2
 
+all_sentences = get_sentences('doc.txt')
 
-# Zählen wie oft jedes Wort vorkommt und diese Häufigkeit in word_frequencies abspeichern
-word_frequencies = {}
-num_words = 0
-
-for sentence in all_sentences:
-    words = sentence.split(' ')
-    for word in words:
-        if word not in word_frequencies:
-            word_frequencies[word] = 1
-        else: 
-            word_frequencies[word] += 1
-        num_words += 1
-
-# Worthäufigkeiten durch Gesamtanzahl Wörter teilen
-for frequency in word_frequencies:
-    word_frequencies[frequency] = word_frequencies[frequency] / num_words
+word_frequencies = calculate_word_frequency(all_sentences)
 
 
 

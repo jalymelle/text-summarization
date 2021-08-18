@@ -1,6 +1,8 @@
 import os
 from math import log10
-from functions import get_sentences
+
+from nltk.tokenize import sent_tokenize, word_tokenize
+from functions import calculate_word_frequency, get_sentences, collect_all_words
 
 # Text in Sätze aufteilen
 all_sentences = get_sentences('doc.txt')
@@ -14,38 +16,10 @@ threshold = 0.1
 tfidf_words = {}
 
 # TF berechnen
-word_frequencies = {}
-num_words = 0
-
-for sentence in all_sentences:
-    words = sentence.split(' ')
-    for word in words:
-        if word not in word_frequencies:
-            word_frequencies[word] = 1
-        else: 
-            word_frequencies[word] += 1
-        num_words += 1
-
-# Worthäufigkeiten durch Gesamtanzahl Wörter teilen
-for frequency in word_frequencies:
-    word_frequencies[frequency] = word_frequencies[frequency] / num_words
+word_frequencies = calculate_word_frequency(all_sentences)
 
 # IDF berechnen
-all_words = []
-directory = r'C:\Users\megan\Desktop\maturaarbeit\code\data\BBC News Summary\News Articles\business'
-for filename in os.listdir(directory):
-    abs_file_path = os.path.join(directory, filename)
-    words_in_doc = set()
-    with open(abs_file_path, 'r') as document:
-        paragraphs = document.readlines()
-        for paragraph in paragraphs: 
-            sentences = paragraph.split('.')
-            for sentence in sentences:
-                sentence = sentence.replace('\n', '')
-                words = sentence.split(' ')
-                for word in words:
-                    words_in_doc.add(word)
-    all_words.append(words_in_doc)
+all_words = collect_all_words()
 
 inverse_document_frequencies = {}
 num_documents = 0

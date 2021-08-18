@@ -7,9 +7,9 @@ vertices = get_sentences('doc.txt')
 # Gemeinsame Wörter berechnen
 all_similarities = []
 
-for sentence in vertices:
-    if len(sentence) == 0 or len(sentence) == 1:
-        vertices.remove(sentence)
+#for sentence in vertices:
+#    if len(sentence) == 0 or len(sentence) == 1:
+#        vertices.remove(sentence)
 
 
 for sentence_1 in vertices:
