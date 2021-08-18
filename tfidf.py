@@ -1,15 +1,10 @@
-import os
-from math import log10
-
-from nltk.tokenize import sent_tokenize, word_tokenize
-from functions import calculate_word_frequency, get_sentences, collect_all_words
+from functions import (calculate_inverse_document_frequency, 
+    calculate_word_frequency, get_sentences)
 
 # Text in Sätze aufteilen
 all_sentences = get_sentences('doc.txt')
 
 summary_length = 2
-
-
 
 threshold = 0.1
 # create list of all words
@@ -19,20 +14,7 @@ tfidf_words = {}
 word_frequencies = calculate_word_frequency(all_sentences)
 
 # IDF berechnen
-all_words = collect_all_words()
-
-inverse_document_frequencies = {}
-num_documents = 0
-
-for sentence in all_sentences:
-    words = sentence.split(' ')
-    for word in words:
-        if word not in inverse_document_frequencies:
-            idf = 1
-            for word_set in all_words:
-                if word in word_set:
-                    idf += 1
-            inverse_document_frequencies[word] = log10(len(all_words) / idf)
+inverse_document_frequencies = calculate_inverse_document_frequency(all_sentences)
 
 # get tfidf scores for each word
 for sentence in all_sentences:

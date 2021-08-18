@@ -1,7 +1,6 @@
-import os
-from math import log10, sqrt
+from math import sqrt
 import numpy as np
-from functions import get_sentences
+from functions import calculate_inverse_document_frequency, get_sentences
 
 
 threshold = 0.1
@@ -10,34 +9,9 @@ epsilon = 0.1
 # Text in Sätze aufteilen
 vertices = get_sentences('doc.txt')
 
-all_words = []
-directory = r'C:\Users\megan\Desktop\maturaarbeit\code\data\BBC News Summary\News Articles\business'
-for filename in os.listdir(directory):
-    abs_file_path = os.path.join(directory, filename)
-    words_in_doc = set()
-    with open(abs_file_path, 'r') as document:
-        paragraphs = document.readlines()
-        for paragraph in paragraphs: 
-            sentences = paragraph.split('.')
-            for sentence in sentences:
-                sentence = sentence.replace('\n', '')
-                words = sentence.split(' ')
-                for word in words:
-                    words_in_doc.add(word)
-    all_words.append(words_in_doc)
 
-inverse_document_frequencies = {}
-num_documents = 0
 
-for sentence in vertices:
-    words = sentence.split(' ')
-    for word in words:
-        if word not in inverse_document_frequencies:
-            idf = 1
-            for word_set in all_words:
-                if word in word_set:
-                    idf += 1
-            inverse_document_frequencies[word] = log10(len(all_words) / idf)
+inverse_document_frequencies = calculate_inverse_document_frequency(vertices)
 
 # create matrix of cosine similarities
 sentence_denominators = []
