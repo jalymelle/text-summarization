@@ -1,4 +1,5 @@
 from metrics import update_word_frequency
+from nltk.tokenize import word_tokenize
 
 
 # Sätzen einen Score geben und den Satz mit dem höchsten Score auswählen bis gewünschte Länge erreicht wird.
@@ -9,7 +10,7 @@ def sumbasic_algorithm(sentences: list, word_frequencies, summary_length: int)->
         sentence_scores = {}
         for sentence in sentences:
                 sentence_score = 0
-                words = sentence.split(' ')
+                words = word_tokenize(sentence)
                 sentence_length = len(words)
                 for word in words:
                     frequency = word_frequencies[word]
@@ -21,7 +22,7 @@ def sumbasic_algorithm(sentences: list, word_frequencies, summary_length: int)->
         chosen_sentences.append(best_sentence)
         sentences.remove(best_sentence)
 
-        word_frequencies = update_word_frequency(word_frequencies, best_sentence)
+        word_frequencies = update_word_frequency(best_sentence, word_frequencies)
     return chosen_sentences
 
 

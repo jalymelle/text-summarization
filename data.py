@@ -1,11 +1,14 @@
 import os
-from math import log10
 from nltk.tokenize import sent_tokenize, word_tokenize
 
 def get_sentences(doc)->list:
     """Takes a text document and returns a list of all sentences in the document"""
     with open (doc, 'r', encoding='utf-8') as document:
-        sentences = sent_tokenize(document, language='english')
+        document = document.read()
+        if not document:
+            print('Error')
+        else:
+            sentences = sent_tokenize(document, language='english')
     return sentences
 
 
