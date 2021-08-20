@@ -37,9 +37,22 @@ def calculate_inverse_document_frequency(sentences)->dict:
     return inverse_document_frequencies
 
 
-def update_word_frequency(sentence:str, word_frequencies:dict)->dict:
+def update_word_frequency(sentence:str, frequency_dict:dict)->dict:
     """Decreases the word probability of the words in the chosen sentence"""
     words = word_tokenize(sentence)
     for word in words:
-        word_frequencies[word] = word_frequencies[word] ** 2
-    return word_frequencies
+        frequency_dict[word] = frequency_dict[word] ** 2
+    return frequency_dict
+
+
+def calculate_tfidf(sentences:list)->dict:
+    word_frequencies = calculate_word_frequency(sentences)
+    inverse_document_frequencies = calculate_inverse_document_frequency(sentences)
+    tfidf_scores = {}
+    for sentence in sentences:
+        words = word_tokenize(sentence)
+        for word in words:
+            tfidf = word_frequencies[word] * inverse_document_frequencies[word]
+            tfidf_scores[word] = tfidf
+    
+    return tfidf_scores

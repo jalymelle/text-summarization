@@ -21,7 +21,11 @@ def collect_all_words()->list:
         abs_file_path = os.path.join(directory, filename)
         words_in_doc = set()
         with open(abs_file_path, 'r') as document:
-            sentences = sent_tokenize(document, language='english')
+            document = document.read()
+            if not document:
+                print('Error')
+            else:
+                sentences = sent_tokenize(document, language='english')
             for sentence in sentences:
                 words = word_tokenize(sentence)
                 for word in words:
