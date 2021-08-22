@@ -1,29 +1,9 @@
-from math import log10
-from functions import get_sentences
+
 
 # Text in Sätze aufteilen
-vertices = get_sentences('doc.txt')
+
 
 # Gemeinsame Wörter berechnen
-all_similarities = []
-
-#for sentence in vertices:
-#    if len(sentence) == 0 or len(sentence) == 1:
-#        vertices.remove(sentence)
-
-
-for sentence_1 in vertices:
-    sentence_similarities = []
-    for sentence_2 in vertices:
-        words_in_common = 0
-        for word in sentence_1.split(' '):
-            if word in sentence_2.split(' '):
-                words_in_common += 1
-        
-        similarity = words_in_common / (log10(len(sentence_1)) * log10(len(sentence_2)))
-        sentence_similarities.append(similarity)
-    all_similarities.append(sentence_similarities)
-
 # score_out is sum of all weights of sentences that sentence points to.
 score_out = []
 for i in all_similarities: 
@@ -33,7 +13,6 @@ for i in all_similarities:
 sentence_scores = [1 for sentence in vertices]
 
 # mit Formel Score berechnen # get score of vertices by iteratively updating scores
-d = 0.85
 
 # until convergence:
 for score in range(len(sentence_scores)):
