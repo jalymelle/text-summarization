@@ -59,7 +59,7 @@ def calculate_tfidf(sentences:list)->dict:
 
 
 def calculate_textrank_similarty(sentences:list)->list:
-    similarities = {}
+    similarities = []
     for sentence_1 in sentences:
         sentence_similarities = []
         for sentence_2 in sentences:
@@ -73,5 +73,5 @@ def calculate_textrank_similarty(sentences:list)->list:
             similarity = words_in_common / (log10(len(sentence_1)) * log10(len(sentence_2)))
             sentence_similarities.append(similarity)
 
-        similarities[sentence_1] = sentence_similarities
+        similarities.append(sentence_similarities)
     return similarities
