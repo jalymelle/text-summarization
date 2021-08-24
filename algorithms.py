@@ -55,29 +55,37 @@ def tfidf_algorithm(sentences:list, summary_length:int)->list:
     return chosen_sentences
 
 
-def textrank_algorithm(sentences:list, summary_length:int, d:int)->list:
+def textrank_algorithm(sentences:list, summary_length:int, d:int, epsilon:int)->list:
     similarities = calculate_textrank_similarty(sentences)
     score_out = []
     for sentence in similarities: 
         score_out.append(sum(sentence))
 
-    # nxn matrix of scores, set all scores to 1
-    sentence_scores = [1 for sentence in sentences]
+    # nxn matrix of scores, set all scores to 0
+    matrix = np.zeros((len(sentences), len(sentences)))
 
-    # until convergence:
-    for i in range(len(sentence_scores)):
-        update = 0
+    for i in range(len(sentences)):
         for j in range(len(sentences)):
-            common_score = similarities[i][j]
-            if common_score != 0:
-                update += common_score * sentence_scores[j] / score_out[j] 
+            if score_out[j] != 0:
+                score = similarities[i][j] / score_out[j] 
+            else:
+                score = 0
+        
+        total_score = (1-d) + d * score
+        matrix[i][j] = total_score
+    
+    # mit Hilfe
+    p_vector = np.array([1.0 / len(sentences)] * len(sentences))
+    lambda_ = 1.0
 
-        updated_score = (1-d) + d * update
-        sentence_scores[i-1] = updated_score
+    while lambda_ > epsilon:
+        next_p = np.dot(matrix.T, p_vector)
+        lambda_ = np.linalg.norm(np.subtract(next_p, p_vector))
+        p_vector = next_p 
 
 
     # sort vertices based on final score
-    final_scores = dict(zip(sentences, sentence_scores))
+    final_scores = dict(zip(sentences, p_vector))
 
     chosen_sentences = []
 
@@ -107,14 +115,14 @@ def lexrank_algorithm(sentences:list, summary_length:int, threshold:int, epsilon
 
     for i in range(len(sentences)):
         sentence_degree = 1
-        sentence_1 = sentences[i].split(' ')
-        words = set(word for word in sentence_1)
+        words_1 = word_tokenize(sentences[i])
+        word_set = set(words_1)
         for j in range(len(sentences)):
             numerator = 0
-            sentence_2 = sentences[j].split(' ')
-            words.add(word for word in sentence_2)
+            words_2 = word_tokenize(sentences[j])
+            word_set.add(word for word in words_2)
             for word in words: 
-                numerator += sentence_1.count(word) * sentence_2.count(word) 
+                numerator += words_1.count(word) * words_2.count(word) 
 
             idf_cosine = numerator / (sqrt(sentence_denominators[i]) * sqrt(sentence_denominators[j]))
             if idf_cosine > threshold:
@@ -142,7 +150,6 @@ def lexrank_algorithm(sentences:list, summary_length:int, threshold:int, epsilon
 
     final_scores = dict(zip(sentences, p_vector))
     chosen_sentences = []
-    summary_length = 2
 
     while len(chosen_sentences) < summary_length:
         best_sentence = max(final_scores, key=final_scores.get)
