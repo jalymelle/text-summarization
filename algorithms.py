@@ -6,6 +6,7 @@ from metrics import (calculate_word_frequency, update_frequency, calculate_tfidf
 
 def sumbasic_algorithm(sentences: list, summary_length: int)->list:
     word_frequencies = calculate_word_frequency(sentences)
+    print(word_frequencies)
     sentence_scores = {}
 
     for sentence in sentences:
@@ -26,7 +27,7 @@ def sumbasic_algorithm(sentences: list, summary_length: int)->list:
     while len(chosen_sentences) < summary_length:
         best_sentence = max(sentence_scores)
         chosen_sentences.append(best_sentence)
-        sentences.remove(best_sentence)
+        del sentence_scores[best_sentence]
 
          # Decrease the word scores, so the same words don't show up too many times.
         word_frequencies = update_frequency(best_sentence, word_frequencies)
@@ -56,7 +57,7 @@ def tfidf_algorithm(sentences:list, summary_length:int)->list:
     while len(chosen_sentences) < summary_length:
         best_sentence = max(sentence_scores)
         chosen_sentences.append(best_sentence)
-        sentences.remove(best_sentence)
+        del sentence_scores[best_sentence]
 
         # Decrease the word scores, so the same words don't show up too many times.
         tfidf_scores = update_frequency(best_sentence, tfidf_scores)

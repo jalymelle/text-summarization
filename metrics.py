@@ -43,7 +43,7 @@ def calculate_inverse_document_frequency(sentences:list)->dict:
     return inverse_document_frequencies
 
 
-def update_word_frequency(sentence:str, frequency_dict:dict)->dict:
+def update_frequency(sentence:str, frequency_dict:dict)->dict:
     """Decreases the word probability of the words in the chosen sentence."""
     words = word_tokenize(sentence)
     for word in words:
@@ -132,7 +132,7 @@ def calculate_lexrank_similarity(sentences:list, threshold:int)->list:
             numerator = 0
             words_2 = word_tokenize(sentences[j])
             # Word_set is the set of all words in sentences i and j.
-            word_set = set(words_1) + set(words_2)
+            word_set = set.union(set(words_1), set(words_2))
 
             for word in word_set: 
                 # Numerator for two sentences: Multiply the word frequencies 
