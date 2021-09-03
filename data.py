@@ -13,6 +13,11 @@ def get_sentences(doc)->list:
     return sentences
 
 
+def get_words(sentence:str)->list:
+    words = [word.lower() for word in word_tokenize(sentence)]
+    return words
+
+
 
 def collect_all_words()->list:
     """Returns a set of all the words in the document for each document in the directory"""
@@ -29,7 +34,7 @@ def collect_all_words()->list:
         # Add all words in the document to words_in_doc.
         sentences = get_sentences(abs_file_path)
         for sentence in sentences:
-            words = word_tokenize(sentence)
+            words = get_words(sentence)
             for word in words:
                 words_in_doc.add(word)
         all_words.append(words_in_doc)

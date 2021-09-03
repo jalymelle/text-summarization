@@ -1,31 +1,30 @@
 import numpy as np
-from nltk.tokenize import word_tokenize
+from data import get_words
 from metrics import (calculate_word_frequency, update_frequency, calculate_tfidf,
     calculate_textrank_similarty, calculate_lexrank_similarity, power_method)
 
 
 def sumbasic_algorithm(sentences: list, summary_length: int)->list:
     word_frequencies = calculate_word_frequency(sentences)
-    print(word_frequencies)
     sentence_scores = {}
-
-    for sentence in sentences:
-            sentence_score = 0.
-            words = word_tokenize(sentence)
-            sentence_length = len(words)
-
-            # Calculate the sentence score by summing up all word frequencies 
-            # of the words in the sentence.
-            for word in words:
-                frequency = word_frequencies[word]
-                sentence_score += frequency / sentence_length
-            sentence_scores[sentence] = sentence_score
 
     # Keep selecting sentences until the summary length is reached.
     chosen_sentences = []
 
     while len(chosen_sentences) < summary_length:
-        best_sentence = max(sentence_scores)
+        for sentence in sentences:
+            sentence_score = 0.
+            words = get_words(sentence)
+            sentence_length = len(words)
+
+            # Calculate the sentence score by summing up all word frequencies 
+            # of the words in the sentence.
+            for word in words:
+                sentence_score += word_frequencies[word]
+            sentence_score /= sentence_length
+            sentence_scores[sentence] = sentence_score
+            
+        best_sentence = max(sentence_scores, key=sentence_scores.get)
         chosen_sentences.append(best_sentence)
         del sentence_scores[best_sentence]
 
@@ -42,7 +41,7 @@ def tfidf_algorithm(sentences:list, summary_length:int)->list:
     for sentence in sentences:
         sentence_score = 0
         # Split the sentence into a list of words.
-        words = word_tokenize(sentence)
+        words = get_words(sentence)
         sentence_length = len(words)
 
         # Calculate the sentence score by summing up all tfidf scores 

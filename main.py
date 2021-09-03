@@ -4,7 +4,7 @@ lexrank_algorithm)
 
 
 def run(algorithm:str, length:int)->str:
-    all_sentences = get_sentences(r'data\BBC News Summary\News Articles\business\005.txt')
+    all_sentences = get_sentences(r'data\BBC News Summary\News Articles\business\010.txt')
 
     if algorithm == 'sumbasic':
         chosen_sentences = sumbasic_algorithm(all_sentences, summary_length=length)
@@ -25,8 +25,8 @@ def run(algorithm:str, length:int)->str:
     return summary
 
 
-summary = run('sumbasic', 5)
-#print('Sumbasic', summary)
+summary = run('sumbasic', 4)
+print(summary)
 
 #summary = run('tfidf', 2)
 #print('TFIDF', summary)
