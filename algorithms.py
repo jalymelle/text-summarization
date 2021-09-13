@@ -13,7 +13,7 @@ def sumbasic_algorithm(sentences: list, summary_length: int)->list:
 
     while len(chosen_sentences) < summary_length:
         for sentence in sentences:
-            sentence_score = 0.
+            sentence_score = 0
             words = get_words(sentence)
             sentence_length = len(words)
 
@@ -23,7 +23,7 @@ def sumbasic_algorithm(sentences: list, summary_length: int)->list:
                 sentence_score += word_frequencies[word]
             sentence_score /= sentence_length
             sentence_scores[sentence] = sentence_score
-            
+
         best_sentence = max(sentence_scores, key=sentence_scores.get)
         chosen_sentences.append(best_sentence)
         del sentence_scores[best_sentence]
@@ -38,27 +38,27 @@ def tfidf_algorithm(sentences:list, summary_length:int)->list:
     tfidf_scores = calculate_tfidf(sentences)
     sentence_scores = {}
 
-    for sentence in sentences:
-        sentence_score = 0
-        # Split the sentence into a list of words.
-        words = get_words(sentence)
-        sentence_length = len(words)
-
-        # Calculate the sentence score by summing up all tfidf scores 
-        # of the words in the sentence.
-        for word in words:
-            sentence_score += tfidf_scores[word] / sentence_length
-        sentence_scores[sentence] = sentence_score
-
     # Keep selecting sentences until the summary length is reached.
     chosen_sentences = []
 
     while len(chosen_sentences) < summary_length:
-        best_sentence = max(sentence_scores)
+        for sentence in sentences:
+            sentence_score = 0
+            words = get_words(sentence)
+            sentence_length = len(words)
+
+            # Calculate the sentence score by summing up all word frequencies 
+            # of the words in the sentence.
+            for word in words:
+                sentence_score += tfidf_scores[word]
+            sentence_score /= sentence_length
+            sentence_scores[sentence] = sentence_score
+
+        best_sentence = max(sentence_scores, key=sentence_scores.get)
         chosen_sentences.append(best_sentence)
         del sentence_scores[best_sentence]
 
-        # Decrease the word scores, so the same words don't show up too many times.
+         # Decrease the word scores, so the same words don't show up too many times.
         tfidf_scores = update_frequency(best_sentence, tfidf_scores)
 
     return chosen_sentences

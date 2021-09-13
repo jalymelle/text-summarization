@@ -1,5 +1,8 @@
 .vscode
 /data
 data/
-test.py
+test1.py
+test2.py
+test3.py
+test4.py
 /prev_versions

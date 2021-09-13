@@ -1,6 +1,7 @@
 from math import log10, sqrt
 import numpy as np
-from data import collect_all_words, get_words
+from data import get_words, collect_all_words
+from nltk.tokenize import sent_tokenize
 
 def calculate_word_frequency(sentences:list)->dict:
     word_frequencies = {}
@@ -19,11 +20,16 @@ def calculate_word_frequency(sentences:list)->dict:
     # Divide the number of times each word occurs by the number of words in the text.
     for frequency in word_frequencies:
         word_frequencies[frequency] = word_frequencies[frequency] / num_words
+    print(word_frequencies)
     return word_frequencies
 
 
 def calculate_inverse_document_frequency(sentences:list)->dict:
     all_words = collect_all_words()
+    # Extra lines to check for errors
+    #all_words = []
+    #for sentence in sentences:
+        #all_words.append(set(sentences))
     inverse_document_frequencies = {}
 
     for sentence in sentences:
@@ -61,7 +67,6 @@ def calculate_tfidf(sentences:list)->dict:
             # the inverse document frequency.
             tfidf = word_frequencies[word] * inverse_document_frequencies[word]
             tfidf_scores[word] = tfidf
-    
     return tfidf_scores
 
 
@@ -91,6 +96,7 @@ def calculate_textrank_similarty(sentences:list)->list:
         score_out.append(sum(sentence))
 
     return similarities, score_out
+
 
 def power_method(sentences:list, matrix:list, epsilon:int)->list:
     p_vector = np.array([1.0 / len(sentences)] * len(sentences))
