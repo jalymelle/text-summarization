@@ -20,7 +20,6 @@ def calculate_word_frequency(sentences:list)->dict:
     # Divide the number of times each word occurs by the number of words in the text.
     for frequency in word_frequencies:
         word_frequencies[frequency] = word_frequencies[frequency] / num_words
-    print(word_frequencies)
     return word_frequencies
 
 
