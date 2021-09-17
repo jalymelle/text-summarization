@@ -1,35 +1,47 @@
 from nltk.tokenize import sent_tokenize
+from data import get_sentences
+import os
 from main import run
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 #from sumy.summarizers.text_rank import TextRankSummarizer as Summarizer
-#from sumy.summarizers.lex_rank import LexRankSummarizer as Summarizer
-from sumy.summarizers.sum_basic import SumBasicSummarizer as Summarizer
+from sumy.summarizers.lex_rank import LexRankSummarizer as Summarizer
+#from sumy.summarizers.sum_basic import SumBasicSummarizer as Summarizer
 
-article_path = r'data\BBC News Summary\News Articles\business\012.txt'
-human_summary = r'data\BBC News Summary\Summaries\business\012.txt'
+summaries = []
+my_score = 0
+sumy_score = 0
+total_score = 0
 
-with open (human_summary, 'r') as doc:
-    reference_summary = doc.read()
-    reference_sentences = sent_tokenize(reference_summary)
+summary_directory = os.path.dirname(os.path.realpath(__file__)) + r'\data\BBC News Summary\Summaries\entertainment'
+article_directory = os.path.dirname(os.path.realpath(__file__)) + r'\data\BBC News Summary\News Articles\entertainment'
+for filename in os.listdir(article_directory)[0:10]:
+    summary_file_path = os.path.join(summary_directory, filename)
+    article_file_path = os.path.join(article_directory, filename)
+    reference_sentences = get_sentences(summary_file_path)
+    length = len(reference_sentences)
+    
+    with open(article_file_path, 'r', encoding='utf-8') as doc:
+        my_summary = run(article_file_path, 'lexrank', length)
+        my_sentences = sent_tokenize(my_summary)
+        parser = PlaintextParser.from_file(article_file_path, Tokenizer('english'))
+        summarizer = Summarizer()
+        sumy_sentences = []
+        for sentence in summarizer(parser.document, length):
+            sumy_sentences.append(str(sentence))
+
+    for sentence in reference_sentences:
+        #print(sentence in my_sentences, sentence in sumy_sentences)
+        if sentence in my_sentences:
+            my_score += 1
+        if sentence in sumy_sentences:
+            sumy_score += 1
+        total_score += 1
+    #print(' ')
+
+print(my_score, sumy_score, total_score)
 
 
-length = len(reference_sentences)
-
-generated_summary = run(article_path, 'lexrank', length)
-generated_sentences = sent_tokenize(generated_summary)
-
-LANGUAGE = "english"
-
-parser = PlaintextParser.from_file(article_path, Tokenizer(LANGUAGE))
-summarizer = Summarizer()
-for sentence in summarizer(parser.document, length):
-        print(str(sentence) in reference_sentences)
-
-
-print(length)
-for sentence in generated_sentences:
-    print(sentence in reference_sentences)
 
 
 

@@ -1,7 +1,7 @@
 import os
 import re
 
-directory = os.path.dirname(os.path.realpath(__file__)) + r'\data\BBC News Summary\Summaries\business'
+directory = os.path.dirname(os.path.realpath(__file__)) + r'\data\BBC News Summary\Summaries\entertainment'
 for filename in os.listdir(directory):
     abs_file_path = os.path.join(directory, filename)
     with open (abs_file_path, 'r+', encoding='utf-8') as doc:
