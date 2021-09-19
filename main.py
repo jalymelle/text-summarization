@@ -30,8 +30,8 @@ def run(text_path:str, algorithm:str, length:int)->str:
 #summary = run('tfidf', 4)
 
 #summary = run('textrank', 4)
-path = r'data\BBC News Summary\News Articles\business\005.txt'
+path = r'data\BBC News Summary\News Articles\business\010.txt'
 
-summary = run(path, 'lexrank', 4)
+summary = run(path, 'textrank', 4)
 
 #print(summary)

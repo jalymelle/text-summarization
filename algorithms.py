@@ -14,7 +14,7 @@ def sumbasic_algorithm(sentences: list, summary_length: int)->list:
     while len(chosen_sentences) < summary_length:
         for sentence in sentences:
             sentence_score = 0
-            words = get_words(sentence)
+            words = get_words(sentence, True)
             sentence_length = len(words)
 
             # Calculate the sentence score by summing up all word frequencies 
@@ -44,7 +44,7 @@ def tfidf_algorithm(sentences:list, summary_length:int)->list:
     while len(chosen_sentences) < summary_length:
         for sentence in sentences:
             sentence_score = 0
-            words = get_words(sentence)
+            words = get_words(sentence, True)
             sentence_length = len(words)
 
             # Calculate the sentence score by summing up all word frequencies 
@@ -91,6 +91,7 @@ def textrank_algorithm(sentences:list, summary_length:int, d:int, epsilon:int)->
         del sentence_scores[best_sentence]
     
     return chosen_sentences
+
 
 def lexrank_algorithm(sentences:list, summary_length:int, threshold:int, epsilon:int)->list:
     matrix, degrees = calculate_lexrank_similarity(sentences, threshold)

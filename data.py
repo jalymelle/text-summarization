@@ -1,5 +1,6 @@
 import os
 from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.corpus import stopwords
 
 def get_sentences(doc)->list:
     """Takes a text document and returns a list of all sentences in the document."""
@@ -13,10 +14,17 @@ def get_sentences(doc)->list:
     return sentences
 
 
-def get_words(sentence:str)->list:
+def get_words(sentence:str, remove_stopwords:bool)->list:
+    "Returns a list of the words in the sentence."
     words = [word.lower() for word in word_tokenize(sentence)]
+    if remove_stopwords:
+        words = remove_stop_words(words)
     return words
 
+def remove_stop_words(words:list)->list:
+    "Removes words from the sentence if they are included in the stopwords list."
+    stop_words = set(stopwords.words('english'))
+    return [word for word in words if word not in stop_words]
 
 
 def collect_all_words()->list:
@@ -34,7 +42,7 @@ def collect_all_words()->list:
         # Add all words in the document to words_in_doc.
         sentences = get_sentences(abs_file_path)
         for sentence in sentences:
-            words = get_words(sentence)
+            words = get_words(sentence, True)
             for word in words:
                 words_in_doc.add(word)
         all_words.append(words_in_doc)

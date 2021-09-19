@@ -9,7 +9,7 @@ def calculate_word_frequency(sentences:list)->dict:
 
     # Count how often each word occurs in the text.
     for sentence in sentences:
-        words = get_words(sentence)
+        words = get_words(sentence, True)
         for word in words:
             if word not in word_frequencies:
                 word_frequencies[word] = 1
@@ -32,7 +32,7 @@ def calculate_inverse_document_frequency(sentences:list)->dict:
     inverse_document_frequencies = {}
 
     for sentence in sentences:
-        words = get_words(sentence)
+        words = get_words(sentence, True)
         for word in words:
             # Find the number of documents that contain the word.
             if word not in inverse_document_frequencies:
@@ -48,7 +48,7 @@ def calculate_inverse_document_frequency(sentences:list)->dict:
 
 def update_frequency(sentence:str, frequency_dict:dict)->dict:
     """Decreases the word probability of the words in the chosen sentence."""
-    words = get_words(sentence)
+    words = get_words(sentence, True)
     for word in words:
         frequency_dict[word] = frequency_dict[word] ** 2
     return frequency_dict
@@ -60,7 +60,7 @@ def calculate_tfidf(sentences:list)->dict:
     tfidf_scores = {}
 
     for sentence in sentences:
-        words = get_words(sentence)
+        words = get_words(sentence, True)
         for word in words:
             # Calculate the tfidf score by multiplying the word frequency and 
             # the inverse document frequency.
@@ -78,8 +78,8 @@ def calculate_textrank_similarty(sentences:list)->list:
         for sentence_2 in sentences:
             # Find the number of words that are in both sentences.
             words_in_common = 0
-            words_1 = get_words(sentence_1)
-            words_2 = get_words(sentence_2)
+            words_1 = get_words(sentence_1, True)
+            words_2 = get_words(sentence_2, True)
             for word in words_1:
                 if word in words_2:
                     words_in_common += 1
@@ -117,7 +117,7 @@ def calculate_lexrank_similarity(sentences:list, threshold:int)->list:
         # Multiply the word frequencies and inverse document frequencies of each word 
         # in the sentence to calculate the sentence denominator. 
         sentence_tfidf = 0 
-        words = get_words(sentence)
+        words = get_words(sentence, True)
         word_set = set(words)
         for word in word_set:
             tf = words.count(word)
@@ -130,10 +130,10 @@ def calculate_lexrank_similarity(sentences:list, threshold:int)->list:
 
     for i in range(len(sentences)):
         sentence_degree = 1
-        words_1 = get_words(sentences[i])
+        words_1 = get_words(sentences[i], True)
         for j in range(len(sentences)):
             numerator = 0
-            words_2 = get_words(sentences[j])
+            words_2 = get_words(sentences[j], True)
             # Word_set is the set of all words in sentences i and j.
             word_set = set.union(set(words_1), set(words_2))
 
