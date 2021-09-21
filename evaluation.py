@@ -14,16 +14,16 @@ my_score = 0
 sumy_score = 0
 total_score = 0
 
-summary_directory = os.path.dirname(os.path.realpath(__file__)) + r'\data\BBC News Summary\Summaries\business'
-article_directory = os.path.dirname(os.path.realpath(__file__)) + r'\data\BBC News Summary\News Articles\business'
-for filename in os.listdir(article_directory)[0:12]:
+summary_directory = os.path.dirname(os.path.realpath(__file__)) + r'\data\BBC News Summary\Summaries\entertainment'
+article_directory = os.path.dirname(os.path.realpath(__file__)) + r'\data\BBC News Summary\News Articles\entertainment'
+for filename in os.listdir(article_directory)[5:6]:
     summary_file_path = os.path.join(summary_directory, filename)
     article_file_path = os.path.join(article_directory, filename)
     reference_sentences = get_sentences(summary_file_path)
     length = len(reference_sentences)
     
     with open(article_file_path, 'r', encoding='utf-8') as doc:
-        my_summary = run(article_file_path, 'sumbasic', length)
+        my_summary = run(article_file_path, 'textrank', length)
         my_sentences = sent_tokenize(my_summary)
         parser = PlaintextParser.from_file(article_file_path, Tokenizer('english'))
         summarizer = Summarizer()
@@ -41,7 +41,7 @@ for filename in os.listdir(article_directory)[0:12]:
         total_score += 1
     #print(' ')
 
-print(my_score, sumy_score, total_score)
+print(my_score, total_score)
 
 
 

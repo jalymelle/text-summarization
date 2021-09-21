@@ -21,7 +21,7 @@ def run(text_path:str, algorithm:str, length:int)->str:
         threshold=0.1, epsilon=0.1)
     
 
-    summary = ' '.join(sentence for sentence in chosen_sentences)
+    summary = ' '.join(sentence for sentence in all_sentences if sentence in chosen_sentences)
     return summary
 
 
@@ -30,8 +30,8 @@ def run(text_path:str, algorithm:str, length:int)->str:
 #summary = run('tfidf', 4)
 
 #summary = run('textrank', 4)
-path = r'data\BBC News Summary\News Articles\business\010.txt'
+path = r'data\BBC News Summary\News Articles\entertainment\005.txt'
 
-summary = run(path, 'textrank', 4)
+summary = run(path, 'sumbasic', 4)
 
-#print(summary)
+print(summary)
