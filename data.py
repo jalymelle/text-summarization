@@ -14,11 +14,16 @@ def get_sentences(doc)->list:
     return sentences
 
 
-def get_words(sentence:str, remove_stopwords:bool)->list:
-    "Returns a list of the words in the sentence."
-    words = [word.lower() for word in word_tokenize(sentence)]
-    if remove_stopwords:
-        words = remove_stop_words(words)
+def get_words(sentences:list, remove_stopwords:bool)->list:
+    """Returns a list of lists. For each sentence, there is a list of 
+        all the words in the sentence."""
+    word_matrix = []
+    for sentence in sentences:
+        words = [word.lower() for word in word_tokenize(sentence)]
+        if remove_stopwords:
+            words = remove_stop_words(words)
+    
+        word_matrix.append(words)
     return words
 
 def remove_stop_words(words:list)->list:

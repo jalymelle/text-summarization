@@ -1,16 +1,16 @@
-from math import log10, sqrt
 import numpy as np
+from math import log10, sqrt
 from data import get_words, collect_all_words
-from nltk.tokenize import sent_tokenize
+from nltk import word_tokenize
 
-def calculate_word_frequency(sentences:list)->dict:
+def calculate_word_frequency(sentences:list, word_matrix:list)->dict:
+    "Returns a dictionary of each word and its frequency."
     word_frequencies = {}
     num_words = 0
 
     # Count how often each word occurs in the text.
-    for sentence in sentences:
-        words = get_words(sentence, True)
-        for word in words:
+    for sentence in range(len(sentences)):
+        for word in word_matrix[sentence]:
             if word not in word_frequencies:
                 word_frequencies[word] = 1
             else: 
@@ -20,44 +20,45 @@ def calculate_word_frequency(sentences:list)->dict:
     # Divide the number of times each word occurs by the number of words in the text.
     for frequency in word_frequencies:
         word_frequencies[frequency] = word_frequencies[frequency] / num_words
+
     return word_frequencies
 
 
-def calculate_inverse_document_frequency(sentences:list)->dict:
-    all_words = collect_all_words()
-    # Extra lines to check for errors
-    #all_words = []
-    #for sentence in sentences:
-        #all_words.append(set(sentences))
+def calculate_inverse_document_frequency(sentences:list, word_matrix:list)->dict:
+    "Returns a dictionary of each word with its inverse document frequency."
     inverse_document_frequencies = {}
+    all_words = collect_all_words()
 
-    for sentence in sentences:
-        words = get_words(sentence, True)
-        for word in words:
-            # Find the number of documents that contain the word.
+    for sentence in range(len(sentences)):
+        for word in word_matrix[sentence]:
+            # Check if the inverse document frequency has already been added.
             if word not in inverse_document_frequencies:
                 num_contain_word = 1
+
+            # Find the number of documents that contain the word. 
             for word_set in all_words:
                 if word in word_set:
                     num_contain_word += 1
             # Divide the total number of documents by the number of documents 
-            # that contain the word.
+            # that contain the word and take the log.
             inverse_document_frequencies[word] = log10(len(all_words) / num_contain_word)
+
     return inverse_document_frequencies
 
 
-def update_frequency(sentence:str, frequency_dict:dict)->dict:
-    """Decreases the word probability of the words in the chosen sentence."""
-    words = get_words(sentence, True)
+def update_frequency(words:list, frequency_dict:dict)->dict:
+    """Decreases the word probability of the words in the chosen sentence."""    
     for word in words:
         frequency_dict[word] = frequency_dict[word] ** 2
+
     return frequency_dict
 
 
-def calculate_tfidf(sentences:list)->dict:
-    word_frequencies = calculate_word_frequency(sentences)
-    inverse_document_frequencies = calculate_inverse_document_frequency(sentences)
+def calculate_tfidf(sentences:list, word_matrix:list)->dict:
+    "Returns a dictionary of each word with its tfidf score."
     tfidf_scores = {}
+    word_frequencies = calculate_word_frequency(sentences, word_matrix)
+    inverse_document_frequencies = calculate_inverse_document_frequency(sentences, word_matrix)
 
     for sentence in sentences:
         words = get_words(sentence, True)
@@ -66,6 +67,7 @@ def calculate_tfidf(sentences:list)->dict:
             # the inverse document frequency.
             tfidf = word_frequencies[word] * inverse_document_frequencies[word]
             tfidf_scores[word] = tfidf
+
     return tfidf_scores
 
 
