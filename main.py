@@ -12,6 +12,7 @@ def run(text_path:str, algorithm:str, length:int)->str:
         chosen_sentences = sumbasic_algorithm(sentences, words, summary_length=length)
 
     elif algorithm == 'tfidf':
+        print("starting")
         chosen_sentences = tfidf_algorithm(sentences, words, summary_length=length)
 
     elif algorithm == 'textrank':

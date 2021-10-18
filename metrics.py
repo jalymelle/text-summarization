@@ -28,6 +28,7 @@ def calculate_inverse_document_frequency(sentences:list, word_matrix:list)->dict
     "Returns a dictionary of each word with its inverse document frequency."
     inverse_document_frequencies = {}
     all_words = collect_all_words()
+    print("collected")
 
     for sentence in range(len(sentences)):
         for word in word_matrix[sentence]:
@@ -58,8 +59,9 @@ def calculate_tfidf(sentences:list, word_matrix:list)->dict:
     "Returns a dictionary of each word with its tfidf score."
     tfidf_scores = {}
     word_frequencies = calculate_word_frequency(sentences, word_matrix)
+    print("cal1")
     inverse_document_frequencies = calculate_inverse_document_frequency(sentences, word_matrix)
-
+    print("calc2")
     for sentence in sentences:
         words = get_words(sentence, True)
         for word in words:
@@ -72,6 +74,7 @@ def calculate_tfidf(sentences:list, word_matrix:list)->dict:
 
 
 def calculate_textrank_similarty(sentences:list)->list:
+    "Returns a matrix of the similarities between two sentences and a..."
     similarities = []
     score_out = []
 

@@ -1,5 +1,4 @@
 import numpy as np
-from data import get_words
 from metrics import (calculate_word_frequency, update_frequency, calculate_tfidf,
     calculate_textrank_similarty, calculate_lexrank_similarity, power_method)
 
@@ -37,6 +36,7 @@ def sumbasic_algorithm(sentences:list, word_matrix:list, summary_length:int)->li
 def tfidf_algorithm(sentences:list, word_matrix:list, summary_length:int)->list:
     sentence_scores = {}
     tfidf_scores = calculate_tfidf(sentences, word_matrix)
+    print("calculated")
 
     # Keep selecting sentences until the summary length is reached.
     chosen_sentences = []
