@@ -1,4 +1,3 @@
-import os
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 

@@ -36,7 +36,6 @@ def sumbasic_algorithm(sentences:list, word_matrix:list, summary_length:int)->li
 def tfidf_algorithm(sentences:list, word_matrix:list, summary_length:int)->list:
     sentence_scores = {}
     tfidf_scores = calculate_tfidf(sentences, word_matrix)
-    print("calculated")
 
     # Keep selecting sentences until the summary length is reached.
     chosen_sentences = []
@@ -63,8 +62,9 @@ def tfidf_algorithm(sentences:list, word_matrix:list, summary_length:int)->list:
     return chosen_sentences
 
 
-def textrank_algorithm(sentences:list, summary_length:int, d:int, epsilon:int)->list:
-    similarities, score_out = calculate_textrank_similarty(sentences)
+def textrank_algorithm(sentences:list, word_matrix:list, summary_length:int, 
+    d:int, epsilon:int)->list:
+    similarities, score_out = calculate_textrank_similarty(sentences, word_matrix)
     matrix = np.zeros((len(sentences), len(sentences)))
 
     for i in range(len(sentences)):
@@ -92,8 +92,9 @@ def textrank_algorithm(sentences:list, summary_length:int, d:int, epsilon:int)->
     return chosen_sentences
 
 
-def lexrank_algorithm(sentences:list, summary_length:int, threshold:int, epsilon:int)->list:
-    matrix, degrees = calculate_lexrank_similarity(sentences, threshold)
+def lexrank_algorithm(sentences:list, word_matrix:list, summary_length:int, 
+    threshold:int, epsilon:int)->list:
+    matrix, degrees = calculate_lexrank_similarity(sentences, word_matrix, threshold)
 
     for i in range(len(sentences)):
         for j in range(len(sentences)):

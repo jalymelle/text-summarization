@@ -32,13 +32,10 @@ def run(text_path:str, algorithm:str, length:int)->str:
     return summary
 
 
-#summary = run('sumbasic', 4)
-#print(summary)
-#summary = run('tfidf', 4)
-
-#summary = run('textrank', 4)
 path = r'data\BBC News Summary\News Articles\entertainment\005.txt'
 
-summary = run(path, 'tfidf', 4)
+summary_1 = run(path, 'textrank', 4)
+summary_2 = run(path, 'lexrank', 4)
 
-print(summary)
+print(summary_1)
+print(summary_2)

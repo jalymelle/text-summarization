@@ -6,7 +6,7 @@ from data import get_sentences, get_words
 
 def collect_all_words()->list:
     """Returns a set of all the words in the document for each document in the directory"""
-    directory = os.path.dirname(os.path.realpath(__file__)) + r'\data\BBC News Summary\News Articles\x'
+    directory = os.path.dirname(os.path.realpath(__file__)) + r'\data\BBC News Summary\News Articles\business'
 
     # All_words is a list of word sets for each document.
     all_words = []
@@ -37,9 +37,6 @@ for document_word_set in document_word_sets:
         else: 
             all_words_with_frequencies[word] += 1
 
-with open("idf.txt", "w") as document:
+with open(r'data\BBC News Summary\idf\business_idf.txt', 'w') as document:
     document.write(str(all_words_with_frequencies))
 
-#with open('idf.txt', 'r') as document:
-#    document = document.read()
-#    idf_frequencies = ast.literal_eval(document)
