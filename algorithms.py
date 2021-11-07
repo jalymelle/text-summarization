@@ -7,9 +7,9 @@ def sumbasic_algorithm(sentences:list, word_matrix:list, summary_length:int)->li
     sentence_scores = {}
     word_frequencies = calculate_word_frequency(sentences, word_matrix)
 
-    # Keep selecting sentences until the summary length is reached.
     chosen_sentences = []
 
+    # Keep selecting sentences until the summary length is reached.
     while len(chosen_sentences) < summary_length:
         for sentence in range(len(sentences)):
             sentence_score = 0 

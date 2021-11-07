@@ -1,6 +1,4 @@
 import os
-import json
-import ast
 from data import get_sentences, get_words
 
 

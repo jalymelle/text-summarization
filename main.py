@@ -6,13 +6,12 @@ lexrank_algorithm)
 def run(text_path:str, algorithm:str, length:int)->str:
     # preprocessing: tokenizing into sentences and words
     sentences = get_sentences(text_path)
-    words = get_words(sentences, remove_stopwords=True)
+    words = get_words(sentences, stem=True, remove_stopwords=True)
 
     if algorithm == 'sumbasic':
         chosen_sentences = sumbasic_algorithm(sentences, words, summary_length=length)
 
     elif algorithm == 'tfidf':
-        print("starting")
         chosen_sentences = tfidf_algorithm(sentences, words, summary_length=length)
 
     elif algorithm == 'textrank':
@@ -34,8 +33,6 @@ def run(text_path:str, algorithm:str, length:int)->str:
 
 path = r'data\BBC News Summary\News Articles\entertainment\005.txt'
 
-summary_1 = run(path, 'textrank', 4)
-summary_2 = run(path, 'lexrank', 4)
+summary_1 = run(path, 'lexrank', 4)
 
 print(summary_1)
-print(summary_2)
