@@ -21,7 +21,7 @@ def get_words(sentences:list, stem:bool, remove_stopwords:bool)->list:
     for sentence in sentences:
         words = [word.lower() for word in word_tokenize(sentence)]
         if stem:
-            stemmer = LancasterStemmer()
+            stemmer = PorterStemmer()
             words = [stemmer.stem(word) for word in words]
         if remove_stopwords:
             words = remove_stop_words(words)

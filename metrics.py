@@ -1,7 +1,6 @@
 import ast
 import numpy as np
 from math import log10, sqrt
-from data import get_words
 
 def calculate_word_frequency(sentences:list, word_matrix:list)->dict:
     """Returns a dictionary of each word and its frequency."""
@@ -16,6 +15,7 @@ def calculate_word_frequency(sentences:list, word_matrix:list)->dict:
             else: 
                 word_frequencies[word] += 1
             num_words += 1
+    print(word_frequencies)
 
     # Divide the number of times each word occurs by the number of words in the text.
     for frequency in word_frequencies:

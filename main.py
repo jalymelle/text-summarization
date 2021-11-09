@@ -33,6 +33,6 @@ def run(text_path:str, algorithm:str, length:int)->str:
 
 path = r'data\BBC News Summary\News Articles\entertainment\005.txt'
 
-summary_1 = run(path, 'lexrank', 4)
+summary_1 = run(path, 'sumbasic', 4)
 
 print(summary_1)
