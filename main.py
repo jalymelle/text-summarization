@@ -16,7 +16,7 @@ def run(text_path:str, algorithm:str, length:int)->str:
         chosen_sentences = sumbasic_algorithm(sentences, words, summary_length=length)
 
     elif algorithm == 'tfidf':
-        chosen_sentences = tfidf_algorithm(sentences, words, summary_length=length)
+        chosen_sentences = tfidf_algorithm(sentences, words, summary_length=length, category=category)
 
     elif algorithm == 'textrank':
         chosen_sentences = textrank_algorithm(sentences, words, summary_length=length, 
@@ -24,7 +24,7 @@ def run(text_path:str, algorithm:str, length:int)->str:
 
     elif algorithm == 'lexrank':
         chosen_sentences = lexrank_algorithm(sentences, words, summary_length=length, 
-        threshold=0.1, epsilon=0.1)
+        threshold=0.1, epsilon=0.1, category=category)
     
     else:
         print('No algorithm selected.')
@@ -37,6 +37,6 @@ def run(text_path:str, algorithm:str, length:int)->str:
 
 path = r'data\BBC News Summary\News Articles\sport\001.txt'
 
-summary_1 = run(path, 'textrank', 1)
+summary_1 = run(path, 'lexrank', 1)
 
 print(summary_1)

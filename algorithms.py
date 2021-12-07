@@ -33,9 +33,9 @@ def sumbasic_algorithm(sentences:list, word_matrix:list, summary_length:int)->li
     return chosen_sentences
 
 
-def tfidf_algorithm(sentences:list, word_matrix:list, summary_length:int)->list:
+def tfidf_algorithm(sentences:list, word_matrix:list, summary_length:int, category:str)->list:
     sentence_scores = {}
-    tfidf_scores = calculate_tfidf(sentences, word_matrix)
+    tfidf_scores = calculate_tfidf(sentences, word_matrix, category)
 
     # Keep selecting sentences until the summary length is reached.
     chosen_sentences = []
@@ -92,8 +92,8 @@ def textrank_algorithm(sentences:list, word_matrix:list, summary_length:int,
 
 
 def lexrank_algorithm(sentences:list, word_matrix:list, summary_length:int, 
-    threshold:int, epsilon:int)->list:
-    matrix, degrees = calculate_lexrank_similarity(sentences, word_matrix, threshold)
+    threshold:int, epsilon:int, category:str)->list:
+    matrix, degrees = calculate_lexrank_similarity(sentences, word_matrix, threshold, category)
 
     for i in range(len(sentences)):
         for j in range(len(sentences)):

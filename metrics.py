@@ -15,7 +15,6 @@ def calculate_word_frequency(sentences:list, word_matrix:list)->dict:
             else: 
                 word_frequencies[word] += 1
             num_words += 1
-    print(word_frequencies)
 
     # Divide the number of times each word occurs by the number of words in the text.
     for frequency in word_frequencies:
@@ -24,12 +23,12 @@ def calculate_word_frequency(sentences:list, word_matrix:list)->dict:
     return word_frequencies
 
 
-def calculate_inverse_document_frequency(sentences:list, word_matrix:list)->dict:
+def calculate_inverse_document_frequency(sentences:list, word_matrix:list, category:str)->dict:
     """Returns a dictionary of each word with its inverse document frequency."""
     inverse_document_frequencies = {}
 
     # Get the inverse document frequencies of words in the business articles.
-    with open(r'data\BBC News Summary\idf\business_idf.txt', 'r') as document:
+    with open(r"data\BBC News Summary\idf\\" + category + "_idf.txt", 'r') as document:
         document = document.read()
         all_idf_frequencies = ast.literal_eval(document)
 
@@ -57,11 +56,11 @@ def update_frequency(words:list, frequency_dict:dict)->dict:
     return frequency_dict
 
 
-def calculate_tfidf(sentences:list, word_matrix:list)->dict:
+def calculate_tfidf(sentences:list, word_matrix:list, category:str)->dict:
     """Returns a dictionary of each word with its tfidf score."""
     tfidf_scores = {}
     word_frequencies = calculate_word_frequency(sentences, word_matrix)
-    inverse_document_frequencies = calculate_inverse_document_frequency(sentences, word_matrix)
+    inverse_document_frequencies = calculate_inverse_document_frequency(sentences, word_matrix, category)
 
     for sentence in range(len(sentences)):
         for word in word_matrix[sentence]:
@@ -117,10 +116,10 @@ def calculate_textrank_similarty(sentences:list, word_matrix:list)->list:
 
 
 
-def calculate_lexrank_similarity(sentences:list, word_matrix:list, threshold:int)->list:
+def calculate_lexrank_similarity(sentences:list, word_matrix:list, threshold:int, category:str)->list:
     """Returns a matrix of sentences with 1 if the sentences are similar and 0 if they
     are not and the total number of similarities for each sentence"""
-    idf = calculate_inverse_document_frequency(sentences, word_matrix)
+    idf = calculate_inverse_document_frequency(sentences, word_matrix, category)
     sentence_denominators = []
 
     # Multiply the word frequencies and inverse document frequencies of each word 
