@@ -1,10 +1,14 @@
+from pathlib import Path
 from data import get_sentences, get_words
 from algorithms import (sumbasic_algorithm, tfidf_algorithm, textrank_algorithm, 
 lexrank_algorithm)
 
 
 def run(text_path:str, algorithm:str, length:int)->str:
-    # preprocessing: tokenizing into sentences and words
+    path = Path(text_path)
+    category = path.parts[-2]
+
+     # preprocessing: tokenizing into sentences and words
     sentences = get_sentences(text_path)
     words = get_words(sentences, stem=True, remove_stopwords=True)
 
@@ -23,7 +27,7 @@ def run(text_path:str, algorithm:str, length:int)->str:
         threshold=0.1, epsilon=0.1)
     
     else:
-        print('Please select an algorithm.')
+        print('No algorithm selected.')
     
     # joining the selected sentences together into a text.
     summary = ' '.join(sentence for sentence in sentences if sentence in chosen_sentences)
@@ -31,8 +35,8 @@ def run(text_path:str, algorithm:str, length:int)->str:
     return summary
 
 
-path = r'data\BBC News Summary\News Articles\entertainment\005.txt'
+path = r'data\BBC News Summary\News Articles\sport\001.txt'
 
-summary_1 = run(path, 'sumbasic', 4)
+summary_1 = run(path, 'textrank', 1)
 
 print(summary_1)

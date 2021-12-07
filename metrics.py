@@ -110,10 +110,9 @@ def calculate_textrank_similarty(sentences:list, word_matrix:list)->list:
 
         similarities.append(sentence_similarities)
 
-    for sentence in similarities: 
+    for sentence_similarity in similarities: 
         # Calculate the sum of all sentence weights.
-        score_out.append(sum(sentence))
-
+        score_out.append(sum(sentence_similarity))
     return similarities, score_out
 
 
@@ -164,5 +163,4 @@ def calculate_lexrank_similarity(sentences:list, word_matrix:list, threshold:int
             else:
                 similarities[sent_1][sent_2] = 0
         score_out.append(sentence_degree)
-    
     return similarities, score_out

@@ -5,9 +5,12 @@ from nltk.stem import PorterStemmer, LancasterStemmer
 def get_sentences(doc)->list:
     """Takes a text document and returns a list of all sentences in the document."""
     with open (doc, 'r', encoding='utf-8') as document:
-        document = document.read()
+        try:
+            document = document.read()
+        except Exception as e:
+            print(e)
         if not document:
-            print('Error')
+            print('Empty document')
         else:
             # Split the text into sentences.
             sentences = sent_tokenize(document, language='english')

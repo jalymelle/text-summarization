@@ -73,7 +73,6 @@ def textrank_algorithm(sentences:list, word_matrix:list, summary_length:int,
                 score = similarities[i][j] / score_out[j] 
             else:
                 score = 0
-        
         # Calculate the TextRank score.
         total_score = (1-d) + d * score
         matrix[i][j] = total_score
