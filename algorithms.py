@@ -62,8 +62,9 @@ def tfidf_algorithm(sentences:list, word_matrix:list, summary_length:int, catego
     return chosen_sentences
 
 
-def textrank_algorithm(sentences:list, word_matrix:list, summary_length:int, 
-    d:int, epsilon:int)->list:
+def textrank_algorithm(sentences:list, word_matrix:list, limit_function, limit:int, d:int,
+    epsilon:int)->list:
+
     similarities, score_out = calculate_textrank_similarty(sentences, word_matrix)
     matrix = np.zeros((len(sentences), len(sentences)))
 
@@ -77,22 +78,25 @@ def textrank_algorithm(sentences:list, word_matrix:list, summary_length:int,
         total_score = (1-d) + d * score
         matrix[i][j] = total_score
     
+    print(matrix)
     vector = power_method(sentences, matrix, epsilon) 
     sentence_scores = dict(zip(sentences, vector))
-
-    # Keep selecting sentences until the summary length is reached.
+    #print(sentence_scores)
     chosen_sentences = []
+    count = 0
 
-    while len(chosen_sentences) < summary_length:
+    while count <= limit:
         best_sentence = max(sentence_scores, key=sentence_scores.get)
+        count += limit_function(chosen_sentences, count)
         chosen_sentences.append(best_sentence)
         del sentence_scores[best_sentence]
-    
+
     return chosen_sentences
 
 
-def lexrank_algorithm(sentences:list, word_matrix:list, summary_length:int, 
-    threshold:int, epsilon:int, category:str)->list:
+
+def lexrank_algorithm(sentences:str, word_matrix:str, limit_type:str, limit:int, category:str, 
+        threshold=0.1, epsilon=0.1)->list:
     matrix, degrees = calculate_lexrank_similarity(sentences, word_matrix, threshold, category)
 
     for i in range(len(sentences)):
@@ -105,7 +109,7 @@ def lexrank_algorithm(sentences:list, word_matrix:list, summary_length:int,
     # Keep selecting sentences until the summary length is reached.
     chosen_sentences = []
 
-    while len(chosen_sentences) < summary_length:
+    while len(chosen_sentences) < limit:
         best_sentence = max(sentence_scores, key=sentence_scores.get)
         chosen_sentences.append(best_sentence)
         del sentence_scores[best_sentence]

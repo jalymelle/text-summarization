@@ -21,8 +21,10 @@ def get_words(sentences:list, stem:bool, remove_stopwords:bool)->list:
     """Returns a list of lists. For each sentence, there is a list of 
         all the words in the sentence."""
     word_matrix = []
+    original_length = 0
     for sentence in sentences:
         words = [word.lower() for word in word_tokenize(sentence)]
+        original_length += len(words)
         if stem:
             stemmer = PorterStemmer()
             words = [stemmer.stem(word) for word in words]
@@ -30,7 +32,8 @@ def get_words(sentences:list, stem:bool, remove_stopwords:bool)->list:
             words = remove_stop_words(words)
     
         word_matrix.append(words)
-    return word_matrix
+    return word_matrix, original_length
+
 
 def remove_stop_words(words:list)->list:
     "Removes words from the sentence if they are included in the stopwords list."
