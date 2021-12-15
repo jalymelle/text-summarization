@@ -1,25 +1,13 @@
 from data import get_sentences, get_words
-from algorithms import sumbasic_algorithm, tfidf_algorithm, textrank_algorithm, lexrank_algorithm
+from algorithms import sumbasic_algorithm, tfidf_algorithm, textrank_algorithm, lexrank_algorithm    
 
 
-def check_sentence_limit(sentence:list, limit:int)->bool:
-    "Returns the amount of sentences added. One in each step."
-    return 1
-
-
-def check_word_limit(sentence:list, limit:int)->bool:
-    "Returns the amount of words added."
-    return len(sentence)
-    
-
-
-def run(text_path:str, algorithm:str, num_sentences=0, num_words=0, ratio=0, category=None)->str:
-
-     # preprocessing: tokenizing into sentences and words
+def run(text_path:str, algorithm:str, num_sentences=0, num_words=0, ratio=0, category="all")->str:
+    # preprocessing: tokenizing into sentences and words
     sentences = get_sentences(text_path)
     words, original_length = get_words(sentences, stem=True, remove_stopwords=True)
 
-    # checking if the user selected any type of limit: either sentence, word or ratio
+    # check if the user selected any type of limit: either sentence, word or ratio
     if num_sentences != 0 and num_sentences < len(sentences):
         limit_function = check_sentence_limit
         limit = num_sentences
@@ -35,7 +23,7 @@ def run(text_path:str, algorithm:str, num_sentences=0, num_words=0, ratio=0, cat
     else:
         return 'No limit or impossible limit selected'
 
-
+    # select algorithm
     if algorithm == 'sumbasic':
         chosen_sentences = sumbasic_algorithm(sentences, words, limit_function, limit)
 
@@ -59,8 +47,19 @@ def run(text_path:str, algorithm:str, num_sentences=0, num_words=0, ratio=0, cat
     return summary
 
 
+def check_sentence_limit(sentence:list)->bool:
+    "Returns the amount of sentences added. One in each step."
+    return 1
+
+
+def check_word_limit(sentence:list)->bool:
+    "Returns the amount of words added."
+    return len(sentence.split())
+
+
+
 path = r'data\BBC News Summary\News Articles\entertainment\005.txt'
 
-summary_1 = run(path, 'textrank', num_sentences=4)
+summary_1 = run(path, 'lexrank', ratio=0.8)
 
 print(summary_1)

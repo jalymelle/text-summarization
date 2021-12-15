@@ -3,14 +3,15 @@ from metrics import (calculate_word_frequency, update_frequency, calculate_tfidf
     calculate_textrank_similarty, calculate_lexrank_similarity, power_method)
 
 
-def sumbasic_algorithm(sentences:list, word_matrix:list, summary_length:int)->list:
+def sumbasic_algorithm(sentences:list, word_matrix:list, limit_function, limit:int,)->list:
     sentence_scores = {}
     word_frequencies = calculate_word_frequency(sentences, word_matrix)
 
-    chosen_sentences = []
-
     # Keep selecting sentences until the summary length is reached.
-    while len(chosen_sentences) < summary_length:
+    chosen_sentences = []
+    count = 0
+
+    while count <= limit:
         for sentence in range(len(sentences)):
             sentence_score = 0 
             sentence_length = len(word_matrix[sentence])
@@ -24,23 +25,26 @@ def sumbasic_algorithm(sentences:list, word_matrix:list, summary_length:int)->li
 
         # Selecting the sentence with the highest score.
         best_sentence = max(sentence_scores, key=sentence_scores.get)
+        count += limit_function(sentences[best_sentence])
         chosen_sentences.append(sentences[best_sentence])
         del sentence_scores[best_sentence]
 
          # Decrease the word scores, so the same words don't show up too many times.
         word_frequencies = update_frequency(word_matrix[best_sentence], word_frequencies)
 
-    return chosen_sentences
+    # return the chosen sentences, expect for the last one because the limit was overstepped
+    return chosen_sentences[:-1]
 
 
-def tfidf_algorithm(sentences:list, word_matrix:list, summary_length:int, category:str)->list:
+def tfidf_algorithm(sentences:list, word_matrix:list, limit_function, limit:int, category:str)->list:
     sentence_scores = {}
     tfidf_scores = calculate_tfidf(sentences, word_matrix, category)
 
     # Keep selecting sentences until the summary length is reached.
     chosen_sentences = []
+    count = 0
 
-    while len(chosen_sentences) < summary_length:
+    while count <= limit:
         for sentence in range(len(sentences)):
             sentence_score = 0 
             sentence_length = len(word_matrix[sentence])
@@ -53,13 +57,15 @@ def tfidf_algorithm(sentences:list, word_matrix:list, summary_length:int, catego
             sentence_scores[sentence] = sentence_score
 
         best_sentence = max(sentence_scores, key=sentence_scores.get)
+        count += limit_function(sentences[best_sentence])
         chosen_sentences.append(sentences[best_sentence])
         del sentence_scores[best_sentence]
 
          # Decrease the word scores, so the same words don't show up too many times.
         tfidf_scores = update_frequency(word_matrix[best_sentence], tfidf_scores)
 
-    return chosen_sentences
+    # return the chosen sentences, expect for the last one because the limit was overstepped
+    return chosen_sentences[:-1]
 
 
 def textrank_algorithm(sentences:list, word_matrix:list, limit_function, limit:int, d:int,
@@ -78,24 +84,23 @@ def textrank_algorithm(sentences:list, word_matrix:list, limit_function, limit:i
         total_score = (1-d) + d * score
         matrix[i][j] = total_score
     
-    print(matrix)
     vector = power_method(sentences, matrix, epsilon) 
     sentence_scores = dict(zip(sentences, vector))
-    #print(sentence_scores)
     chosen_sentences = []
     count = 0
 
     while count <= limit:
         best_sentence = max(sentence_scores, key=sentence_scores.get)
-        count += limit_function(chosen_sentences, count)
+        count += limit_function(best_sentence)
         chosen_sentences.append(best_sentence)
         del sentence_scores[best_sentence]
 
-    return chosen_sentences
+    # return the chosen sentences, expect for the last one because the limit was overstepped
+    return chosen_sentences[:-1]
 
 
 
-def lexrank_algorithm(sentences:str, word_matrix:str, limit_type:str, limit:int, category:str, 
+def lexrank_algorithm(sentences:str, word_matrix:str, limit_function, limit:int, category:str, 
         threshold=0.1, epsilon=0.1)->list:
     matrix, degrees = calculate_lexrank_similarity(sentences, word_matrix, threshold, category)
 
@@ -108,12 +113,15 @@ def lexrank_algorithm(sentences:str, word_matrix:str, limit_type:str, limit:int,
 
     # Keep selecting sentences until the summary length is reached.
     chosen_sentences = []
+    count = 0
 
-    while len(chosen_sentences) < limit:
+    while count <= limit:
         best_sentence = max(sentence_scores, key=sentence_scores.get)
+        count += limit_function(best_sentence)
         chosen_sentences.append(best_sentence)
         del sentence_scores[best_sentence]
-    
-    return chosen_sentences
+
+    # return the chosen sentences, expect for the last one because the limit was overstepped
+    return chosen_sentences[:-1]
 
 
