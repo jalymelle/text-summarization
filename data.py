@@ -2,19 +2,27 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, LancasterStemmer
 
-def get_sentences(doc)->list:
+def get_sentences(doc, contains_title:bool)->list:
     """Takes a text document and returns a list of all sentences in the document."""
     with open (doc, 'r', encoding='utf-8') as document:
         try:
             document = document.read()
         except Exception as e:
-            print(e)
-        if not document:
-            print('Empty document')
+            return e
         else:
+            # remove the title because it does not count as a sentence
+            if contains_title:
+                paragraphs = document.split('\n\n')
+                document = " ".join(paragraphs[1:])
+                title = paragraphs[0]
+            else:
+                title = None
+                
             # Split the text into sentences.
             sentences = sent_tokenize(document, language='english')
-    return sentences
+            
+    print(sentences)
+    return sentences, title
 
 
 def get_words(sentences:list, stem:bool, remove_stopwords:bool)->list:

@@ -3,8 +3,9 @@ from algorithms import sumbasic_algorithm, tfidf_algorithm, textrank_algorithm, 
 
 
 def run(text_path:str, algorithm:str, num_sentences=0, num_words=0, ratio=0, category="all")->str:
+    
     # preprocessing: tokenizing into sentences and words
-    sentences = get_sentences(text_path)
+    sentences, title = get_sentences(text_path, contains_title=False)
     words, original_length = get_words(sentences, stem=True, remove_stopwords=True)
 
     # check if the user selected any type of limit: either sentence, word or ratio
@@ -43,6 +44,8 @@ def run(text_path:str, algorithm:str, num_sentences=0, num_words=0, ratio=0, cat
     
     # joining the selected sentences together into a text.
     summary = ' '.join(sentence for sentence in sentences if sentence in chosen_sentences)
+    if title:
+        summary = title + '\n' + summary
     
     return summary
 
@@ -58,8 +61,8 @@ def check_word_limit(sentence:list)->bool:
 
 
 
-path = r'data\BBC News Summary\News Articles\entertainment\005.txt'
+path = r'data\BBC News Summary\News Articles\entertainment\006.txt'
 
-summary_1 = run(path, 'lexrank', ratio=0.8)
+summary_1 = run(path, 'lexrank', num_sentences=4)
 
 print(summary_1)
