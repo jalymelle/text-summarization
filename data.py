@@ -1,3 +1,4 @@
+from string import digits
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, LancasterStemmer
@@ -20,8 +21,6 @@ def get_sentences(doc, contains_title:bool)->list:
                 
             # Split the text into sentences.
             sentences = sent_tokenize(document, language='english')
-            
-    print(sentences)
     return sentences, title
 
 
@@ -38,12 +37,25 @@ def get_words(sentences:list, stem:bool, remove_stopwords:bool)->list:
             words = [stemmer.stem(word) for word in words]
         if remove_stopwords:
             words = remove_stop_words(words)
-    
         word_matrix.append(words)
-    return word_matrix, original_length
+    
+    # falls ein Satz nach dem Preprocessing weniger als 3 Wörter enthält, den Satz löschen.
+    i = 0
+    for words in word_matrix:
+        if len(words) <= 2:
+            word_matrix.remove(words)
+            sentences.remove(sentences[i])
+        i += 1
+    
+            
+    return sentences, word_matrix, original_length
 
 
 def remove_stop_words(words:list)->list:
     "Removes words from the sentence if they are included in the stopwords list."
-    stop_words = set(stopwords.words('english'))
-    return [word for word in words if word not in stop_words]
+    remove_numbers = str.maketrans('', '', digits)
+    nltk_stop_words = set(stopwords.words('english'))
+    other_stop_words = set(['.', ',', '!', '?', '\'s', '\'', '"', '[', ']', '(', ')'])
+    all_stop_words = nltk_stop_words.union(other_stop_words)
+    
+    return [word.translate(remove_numbers) for word in words if word not in all_stop_words]

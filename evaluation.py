@@ -1,48 +1,37 @@
-from nltk.tokenize import sent_tokenize
-from data import get_sentences
-import os
 from main import run
-from sumy.parsers.plaintext import PlaintextParser
-from sumy.nlp.tokenizers import Tokenizer
-from sumy.utils import get_stop_words
-#from sumy.summarizers.text_rank import TextRankSummarizer as Summarizer
-from sumy.summarizers.lex_rank import LexRankSummarizer as Summarizer
-#from sumy.summarizers.sum_basic import SumBasicSummarizer as Summarizer
+from data import get_sentences
 
-summaries = []
-my_score = 0
-sumy_score = 0
-total_score = 0
+path = r'data\maturaarbeit.txt'
 
-summary_directory = os.path.dirname(os.path.realpath(__file__)) + r'\data\BBC News Summary\Summaries\entertainment'
-article_directory = os.path.dirname(os.path.realpath(__file__)) + r'\data\BBC News Summary\News Articles\entertainment'
-for filename in os.listdir(article_directory)[5:6]:
-    summary_file_path = os.path.join(summary_directory, filename)
-    article_file_path = os.path.join(article_directory, filename)
-    reference_sentences = get_sentences(summary_file_path)
-    length = len(reference_sentences)
-    
-    with open(article_file_path, 'r', encoding='utf-8') as doc:
-        my_summary = run(article_file_path, 'textrank', length)
-        my_sentences = sent_tokenize(my_summary)
-        parser = PlaintextParser.from_file(article_file_path, Tokenizer('english'))
-        summarizer = Summarizer()
-        summarizer.stop_words = get_stop_words('english')
-        sumy_sentences = []
-        for sentence in summarizer(parser.document, length):
-            sumy_sentences.append(str(sentence))
+sentences, title = get_sentences(path, contains_title=False)
+print(len(sentences))
 
-    for sentence in reference_sentences:
-        #print(sentence in my_sentences, sentence in sumy_sentences)
-        if sentence in my_sentences:
-            my_score += 1
-        if sentence in sumy_sentences:
-            sumy_score += 1
-        total_score += 1
-    #print(' ')
+summary_1 = run(path, 'sumbasic', num_sentences=20, category='all')
+summary_2 = run(path, 'tfidf', num_sentences=20, category='all')
+summary_3 = run(path, 'textrank', num_sentences=20, category='all')
+summary_4 = run(path, 'lexrank', num_sentences=20, category='all')
 
-print(my_score, total_score)
+scores = []
 
+for sentence in sentences:
+    score = 0
+    if sentence in summary_1:
+        score += 1
+    if sentence in summary_2:
+        score += 1
+    if sentence in summary_3:
+        score += 1
+    if sentence in summary_4:
+        score += 1
+    scores.append(score)
+
+
+print(scores)
+i = 0
+for score in scores:
+    if score > 1:
+        print(sentences[i])
+    i += 1
 
 
 

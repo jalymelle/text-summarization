@@ -104,6 +104,8 @@ def calculate_textrank_similarty(sentences:list, word_matrix:list)->list:
                     words_in_common += 1
             
             # Divide the words in both sentences by the sentence lengths.
+            #print()
+            #print(words_1, words_2)
             similarity = words_in_common / (log10(len(words_1)) * log10(len(words_2)))
             sentence_similarities.append(similarity)
 
