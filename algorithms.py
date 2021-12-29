@@ -4,32 +4,33 @@ from metrics import (calculate_word_frequency, update_frequency, calculate_tfidf
 
 
 def sumbasic_algorithm(sentences:list, word_matrix:list, limit_function, limit:int,)->list:
+    """Calculates the SumBasic scores for all sentences and returns the highest-scoring ones."""
+
     sentence_scores = {}
     word_frequencies = calculate_word_frequency(sentences, word_matrix)
 
-    # Keep selecting sentences until the summary length is reached.
     chosen_sentences = []
     count = 0
 
+    # keep selecting sentences until the summary length is reached
     while count <= limit:
         for sentence in range(len(sentences)):
             sentence_score = 0 
             sentence_length = len(word_matrix[sentence])
 
-            # Calculate the sentence score by summing up all word frequencies 
-            # of the words in the sentence and dividing by the length of the sentence.
+            # calculate the sentence score 
             for word in word_matrix[sentence]:
                 sentence_score += word_frequencies[word]
             sentence_score /= sentence_length
             sentence_scores[sentence] = sentence_score
 
-        # Selecting the sentence with the highest score.
+        # selecting the sentence with the highest score
         best_sentence = max(sentence_scores, key=sentence_scores.get)
         count += limit_function(sentences[best_sentence])
         chosen_sentences.append(sentences[best_sentence])
         del sentence_scores[best_sentence]
 
-         # Decrease the word scores, so the same words don't show up too many times.
+         # decrease the word scores so the same words don't show up too many times
         word_frequencies = update_frequency(word_matrix[best_sentence], word_frequencies)
 
     # return the chosen sentences, expect for the last one because the limit was overstepped
@@ -37,31 +38,33 @@ def sumbasic_algorithm(sentences:list, word_matrix:list, limit_function, limit:i
 
 
 def tfidf_algorithm(sentences:list, word_matrix:list, limit_function, limit:int, category:str)->list:
+    """Calculates the TFIDF scores for all sentences and returns the highest-scoring ones."""
+
     sentence_scores = {}
     tfidf_scores = calculate_tfidf(sentences, word_matrix, category)
 
-    # Keep selecting sentences until the summary length is reached.
     chosen_sentences = []
     count = 0
 
+    # keep selecting sentences until the summary length is reached
     while count <= limit:
         for sentence in range(len(sentences)):
             sentence_score = 0 
             sentence_length = len(word_matrix[sentence])
 
-            # Calculate the sentence score by summing up all word frequencies 
-            # of the words in the sentence.
+            # calculate the sentence score
             for word in word_matrix[sentence]:
                 sentence_score += tfidf_scores[word]
             sentence_score /= sentence_length
             sentence_scores[sentence] = sentence_score
 
+        # select the best sentence
         best_sentence = max(sentence_scores, key=sentence_scores.get)
         count += limit_function(sentences[best_sentence])
         chosen_sentences.append(sentences[best_sentence])
         del sentence_scores[best_sentence]
 
-         # Decrease the word scores, so the same words don't show up too many times.
+         # decrease the word scores, so the same words don't show up too many times
         tfidf_scores = update_frequency(word_matrix[best_sentence], tfidf_scores)
 
     # return the chosen sentences, expect for the last one because the limit was overstepped
@@ -70,6 +73,7 @@ def tfidf_algorithm(sentences:list, word_matrix:list, limit_function, limit:int,
 
 def textrank_algorithm(sentences:list, word_matrix:list, limit_function, limit:int, d:int,
     epsilon:int)->list:
+    """Calculates the TextRank scores for all sentences and returns the highest-scoring ones."""
 
     similarities, score_out = calculate_textrank_similarty(sentences, word_matrix)
     matrix = np.zeros((len(sentences), len(sentences)))
@@ -80,12 +84,15 @@ def textrank_algorithm(sentences:list, word_matrix:list, limit_function, limit:i
                 score = similarities[i][j] / score_out[j] 
             else:
                 score = 0
-        # Calculate the TextRank score.
+
+        # calculate the TextRank score
         total_score = (1-d) + d * score
         matrix[i][j] = total_score
     
+    # calculate the sentence scores using the power method.
     vector = power_method(sentences, matrix, epsilon) 
     sentence_scores = dict(zip(sentences, vector))
+    
     chosen_sentences = []
     count = 0
 
@@ -101,20 +108,23 @@ def textrank_algorithm(sentences:list, word_matrix:list, limit_function, limit:i
 
 
 def lexrank_algorithm(sentences:str, word_matrix:str, limit_function, limit:int, category:str, 
-        threshold=0.1, epsilon=0.1)->list:
+    threshold=0.1, epsilon=0.1)->list:
+    """Calculates the LexRank scores for all sentences and returns the highest-scoring ones."""
+
     matrix, degrees = calculate_lexrank_similarity(sentences, word_matrix, threshold, category)
 
     for i in range(len(sentences)):
         for j in range(len(sentences)):
             matrix[i][j] /= degrees[i]
 
+    # apply the power method to obtain the sentence scores
     vector = power_method(sentences, matrix, epsilon)
     sentence_scores = dict(zip(sentences, vector))
 
-    # Keep selecting sentences until the summary length is reached.
     chosen_sentences = []
     count = 0
 
+    # keep selecting sentences until the summary length is reached
     while count <= limit:
         best_sentence = max(sentence_scores, key=sentence_scores.get)
         count += limit_function(best_sentence)

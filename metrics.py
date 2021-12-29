@@ -27,8 +27,8 @@ def calculate_inverse_document_frequency(sentences:list, word_matrix:list, categ
     """Returns a dictionary of each word with its inverse document frequency."""
     inverse_document_frequencies = {}
 
-    # Get the inverse document frequencies of words in the business articles.
-    with open(r"data\BBC News Summary\idf\\" + category + "_idf.txt", 'r') as document:
+    # Get the inverse document frequencies of words in the business articles. category + "_idf.txt"
+    with open(r"data\BBC News Summary\idf\\" + "example.txt", 'r') as document:
         document = document.read()
         all_idf_frequencies = ast.literal_eval(document)
 
@@ -68,21 +68,7 @@ def calculate_tfidf(sentences:list, word_matrix:list, category:str)->dict:
             # the inverse document frequency.
             tfidf = word_frequencies[word] * inverse_document_frequencies[word]
             tfidf_scores[word] = tfidf
-
     return tfidf_scores
-
-
-def power_method(sentences:list, matrix:list, epsilon:int)->list:
-    """Applies the power method to a matrix and returns the greatest eigenvector."""
-    p_vector = np.array([1.0 / len(sentences)] * len(sentences))
-    lambda_ = 1.0
-
-    while lambda_ > epsilon:
-        next_p_vector = np.dot(matrix.T, p_vector)
-        lambda_ = np.linalg.norm(np.subtract(next_p_vector, p_vector))
-        p_vector = next_p_vector
-    
-    return p_vector
 
 
 def calculate_textrank_similarty(sentences:list, word_matrix:list)->list:
@@ -121,11 +107,11 @@ def calculate_textrank_similarty(sentences:list, word_matrix:list)->list:
 def calculate_lexrank_similarity(sentences:list, word_matrix:list, threshold:int, category:str)->list:
     """Returns a matrix of sentences with 1 if the sentences are similar and 0 if they
     are not and the total number of similarities for each sentence"""
+
+    # calculate the tfidf score of each sentence 
     idf = calculate_inverse_document_frequency(sentences, word_matrix, category)
     sentence_denominators = []
 
-    # Multiply the word frequencies and inverse document frequencies of each word 
-    # in the sentence to calculate the sentence denominator. 
     for sentence in range(len(sentences)):
         sentence_tfidf = 0 
         words = word_matrix[sentence]
@@ -134,34 +120,50 @@ def calculate_lexrank_similarity(sentences:list, word_matrix:list, threshold:int
             sentence_tfidf += tf * idf[word] ** 2
         sentence_denominators.append(sentence_tfidf)
     
+    # create a matrix of similarities
     similarities = np.zeros((len(sentences), len(sentences)))
     score_out = []
 
     for sent_1 in range(len(sentences)):
         sentence_degree = 1
         words_1 = word_matrix[sent_1]
+
         for sent_2 in range(len(sentences)):
             numerator = 0
             words_2 = word_matrix[sent_2]
-            # Word_set is the set of all words in sentences 1 and 2.
+
+            # combine the word lists to a set
             word_set = set.union(set(words_1), set(words_2))
 
-            # Numerator for two sentences: Multiply the word frequencies 
-            # of each word in the sentences and its inverse document frequency.
+            # calculate the numerator
             for word in word_set: 
                 numerator += words_1.count(word) * words_2.count(word) * idf[word] ** 2
             
-            # Denominator for two sentences: Square root of the previously calculated
-            # sentence denominators.
+            # calculate the denominator
             denominator = (sqrt(sentence_denominators[sent_1]) * sqrt(sentence_denominators[sent_2]))
             idf_cosine = numerator / denominator
 
-            # If the sentences are similar enough (idf_cosine > threshold), set the
-            # weight of the two sentences to 1.
+            # if the sentences are similar enough, set similarity to 1 and increment the sentence degree
             if idf_cosine > threshold:
                 similarities[sent_1][sent_2] = 1
                 sentence_degree += 1
             else:
                 similarities[sent_1][sent_2] = 0
+
         score_out.append(sentence_degree)
+
     return similarities, score_out
+
+
+def power_method(sentences:list, matrix:list, epsilon:int)->list:
+    """Applies the power method to a matrix and returns the greatest eigenvector."""
+
+    p_vector = np.array([1.0 / len(sentences)] * len(sentences))
+    lambda_ = 1.0
+
+    while lambda_ > epsilon:
+        next_p_vector = np.dot(matrix.T, p_vector)
+        lambda_ = np.linalg.norm(np.subtract(next_p_vector, p_vector))
+        p_vector = next_p_vector
+    
+    return p_vector
