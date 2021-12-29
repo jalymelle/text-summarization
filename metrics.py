@@ -4,10 +4,11 @@ from math import log10, sqrt
 
 def calculate_word_frequency(sentences:list, word_matrix:list)->dict:
     """Returns a dictionary of each word and its frequency."""
+    
     word_frequencies = {}
     num_words = 0
 
-    # Count how often each word occurs in the text.
+    # count how often each word occurs in the text
     for sentence in range(len(sentences)):
         for word in word_matrix[sentence]:
             if word not in word_frequencies:
@@ -16,7 +17,7 @@ def calculate_word_frequency(sentences:list, word_matrix:list)->dict:
                 word_frequencies[word] += 1
             num_words += 1
 
-    # Divide the number of times each word occurs by the number of words in the text.
+    # divide frequency count by total number of words
     for frequency in word_frequencies:
         word_frequencies[frequency] = word_frequencies[frequency] / num_words
 
@@ -25,31 +26,32 @@ def calculate_word_frequency(sentences:list, word_matrix:list)->dict:
 
 def calculate_inverse_document_frequency(sentences:list, word_matrix:list, category:str)->dict:
     """Returns a dictionary of each word with its inverse document frequency."""
+
     inverse_document_frequencies = {}
 
-    # Get the inverse document frequencies of words in the business articles. category + "_idf.txt"
-    with open(r"data\BBC News Summary\idf\\" + "example.txt", 'r') as document:
+    # check how rare the words are by comparing with other documents
+    with open(r'data\BBC News Summary\idf\\' + category + "_idf.txt", 'r') as document:
         document = document.read()
         all_idf_frequencies = ast.literal_eval(document)
 
     for sentence in range(len(sentences)):
         for word in word_matrix[sentence]:
-            # Check if the word has an inverse document frequency.
+            # check if the word has an inverse document frequency
             if word not in all_idf_frequencies:
                 num_contain_word = 1
 
-            # Find the number of documents that contain the word.
+            # find the number of documents that contain the word
             else: 
                 num_contain_word = all_idf_frequencies[word] + 1
 
-            # Divide the total number of documents by the number of documents 
-            # that contain the word and take the log.
             inverse_document_frequencies[word] = log10(510 / num_contain_word)
+
     return inverse_document_frequencies
 
 
 def update_frequency(words:list, frequency_dict:dict)->dict:
-    """Decreases the word probability of the words in the chosen sentence."""    
+    """Decreases the word probability of the words in the chosen sentence."""  
+
     for word in words:
         frequency_dict[word] = frequency_dict[word] ** 2
 
@@ -58,22 +60,24 @@ def update_frequency(words:list, frequency_dict:dict)->dict:
 
 def calculate_tfidf(sentences:list, word_matrix:list, category:str)->dict:
     """Returns a dictionary of each word with its tfidf score."""
+
     tfidf_scores = {}
     word_frequencies = calculate_word_frequency(sentences, word_matrix)
     inverse_document_frequencies = calculate_inverse_document_frequency(sentences, word_matrix, category)
 
     for sentence in range(len(sentences)):
         for word in word_matrix[sentence]:
-            # Calculate the tfidf score by multiplying the word frequency and 
-            # the inverse document frequency.
+            # calculate the tfidf score 
             tfidf = word_frequencies[word] * inverse_document_frequencies[word]
             tfidf_scores[word] = tfidf
+
     return tfidf_scores
 
 
 def calculate_textrank_similarty(sentences:list, word_matrix:list)->list:
     """Returns a matrix of the similarities between two sentences 
     and the sum of all sentence weights for each sentence."""
+
     similarities = []
     score_out = []
 
@@ -81,7 +85,7 @@ def calculate_textrank_similarty(sentences:list, word_matrix:list)->list:
         sentence_similarities = []
 
         for sentence_2 in range(len(sentences)):
-            # Find the number of words that are in both sentences.
+            # find the number of words that are in both sentences
             words_in_common = 0
             words_1 = word_matrix[sentence_1]
             words_2 = word_matrix[sentence_2]
@@ -89,24 +93,23 @@ def calculate_textrank_similarty(sentences:list, word_matrix:list)->list:
                 if word in words_2:
                     words_in_common += 1
             
-            # Divide the words in both sentences by the sentence lengths.
-            #print()
-            #print(words_1, words_2)
+            # divide the words in both sentences by the sentence lengths
             similarity = words_in_common / (log10(len(words_1)) * log10(len(words_2)))
             sentence_similarities.append(similarity)
 
         similarities.append(sentence_similarities)
 
     for sentence_similarity in similarities: 
-        # Calculate the sum of all sentence weights.
+        # calculate the sum of all sentence weights
         score_out.append(sum(sentence_similarity))
+        
     return similarities, score_out
 
 
 
 def calculate_lexrank_similarity(sentences:list, word_matrix:list, threshold:int, category:str)->list:
     """Returns a matrix of sentences with 1 if the sentences are similar and 0 if they
-    are not and the total number of similarities for each sentence"""
+    are not and the total number of similarities for each sentence."""
 
     # calculate the tfidf score of each sentence 
     idf = calculate_inverse_document_frequency(sentences, word_matrix, category)

@@ -17,7 +17,7 @@ def get_sentences(doc, contains_title:bool)->list:
         # remove the title because it does not count as a sentence
         if contains_title:
             paragraphs = text.split('\n\n')
-            text = " ".join(paragraphs[1:])
+            text = ' '.join(paragraphs[1:])
             title = paragraphs[0]
         else:
             title = None

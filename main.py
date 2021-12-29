@@ -59,19 +59,19 @@ def run(text_path:str, algorithm:str, stemmer='p', stopwords=True, num_sentences
 
 
 def check_sentence_limit(sentence:list)->bool:
-    "Returns the amount of sentences added. One in each step."
+    """Returns the amount of sentences added. One in each step."""
     return 1
 
 
 def check_word_limit(sentence:list)->bool:
-    "Returns the amount of words added."
+    """Returns the amount of words added."""
     return len(sentence.split())
 
 
 path = r'data\maturaarbeit.txt'
 save_to_file = False
 
-summary = run(path, 'sumbasic', num_sentences=4, contains_title=True)
+summary = run(path, 'tfidf', num_sentences=4, contains_title=True)
 
 print(summary)
 
