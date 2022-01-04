@@ -26,7 +26,7 @@ def get_sentences(doc, contains_title:bool)->list:
         try:
             sentences = sent_tokenize(text, language='english')
         except Exception as e:
-            exit('Sentence Tokenization Error: ', e)
+            exit('Sentence Tokenization Error: ' + str(e))
     return sentences, title
 
 
@@ -42,7 +42,7 @@ def get_words(sentences:list, stem:str, remove_stopwords:bool)->list:
         try:
             words = [word.lower() for word in word_tokenize(sentence)]
         except Exception as e:
-                exit('Word Tokenization Error: ', e)
+                exit('Word Tokenization Error: ' + str(e))
 
         original_length += len(words)
 
@@ -52,7 +52,7 @@ def get_words(sentences:list, stem:str, remove_stopwords:bool)->list:
             words = [stemmer.stem(word) for word in words]
 
         elif stem == 'l':
-            stemmer = PorterStemmer()
+            stemmer = LancasterStemmer()
             words = [stemmer.stem(word) for word in words]
 
         # remove stop words

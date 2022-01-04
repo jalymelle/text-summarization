@@ -1,6 +1,4 @@
 import os
-
-from nltk.tokenize import word_tokenize
 from data import get_sentences, get_words
 
 
@@ -23,8 +21,8 @@ def collect_all_words()->list:
             words_in_doc = set()
 
             # Add all words in the document to words_in_doc.
-            sentences = get_sentences(abs_file_path)
-            word_matrix, original_length = get_words(sentences, False, False)
+            sentences, title = get_sentences(abs_file_path, False)
+            sentences, word_matrix, original_length = get_words(sentences, 'p', False)
             for words in word_matrix:
                 for word in words:
                     words_in_doc.add(word)
@@ -42,5 +40,5 @@ for document_word_set in document_word_sets:
         else: 
             all_words_with_frequencies[word] += 1
 
-with open(r'data\BBC News Summary\idf\all_idf.txt', 'w') as document:
+with open(r'data\BBC News Summary\idf\stemmed_idf.txt', 'w') as document:
     document.write(str(all_words_with_frequencies))
