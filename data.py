@@ -4,29 +4,45 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, LancasterStemmer
 
-def get_sentences(doc, contains_title:bool)->list:
-    """Takes a text document and returns a list of all sentences in the document."""
 
-    # try to read the doucment
-    with open (doc, 'r', encoding='utf-8') as document:
+def get_text(path, contains_title, stemmer, stopwords):
+    """Returns a list of the sentences and a matrix of the words in the text."""
+    text = read_text(path)
+    sentences, title = get_sentences(text, contains_title)
+    sentences, words, original_length = get_words(sentences, stemmer, stopwords)
+
+    return sentences, words, title, original_length
+
+
+def read_text(path):
+    """Reads a text document"""
+    # try to read the document
+    with open(path, 'r', encoding='utf-8') as document:
         try:
             text = document.read()
         except UnicodeDecodeError:
-            exit('Cannot read document. Maybe not a txt file.')
+            exit('Text file contains characters that cannot be read.')
+    
+    return text
+
+
+def get_sentences(text:str, contains_title:bool)->list:
+    """Takes a text document and returns a list of all sentences in the document."""
        
-        # remove the title because it does not count as a sentence
-        if contains_title:
-            paragraphs = text.split('\n\n')
-            text = ' '.join(paragraphs[1:])
-            title = paragraphs[0]
-        else:
-            title = None
+    # remove the title because it does not count as a sentence
+    if contains_title:
+        paragraphs = text.split('\n\n')
+        text = ' '.join(paragraphs[1:])
+        title = paragraphs[0]
+    else:
+        title = None
                 
-        # Split the text into sentences.
-        try:
-            sentences = sent_tokenize(text, language='english')
-        except Exception as e:
-            exit('Sentence Tokenization Error: ' + str(e))
+    # split the text into sentences
+    try:
+        sentences = sent_tokenize(text, language='english')
+    except Exception as e:
+        exit('Sentence Tokenization Error: ' + str(e))
+
     return sentences, title
 
 
@@ -44,8 +60,6 @@ def get_words(sentences:list, stem:str, remove_stopwords:bool)->list:
         except Exception as e:
                 exit('Word Tokenization Error: ' + str(e))
 
-        original_length += len(words)
-
         # stemming
         if stem == 'p':
             stemmer = PorterStemmer()
@@ -59,17 +73,11 @@ def get_words(sentences:list, stem:str, remove_stopwords:bool)->list:
         if remove_stopwords:
             words = remove_stop_words(words)
         
-        # add word list to word matrix
-        word_matrix.append(words)
-    
-    # in case sentence now contains less than 3 words, remove it (avoid division by 0 error later
-    # and if the sentence contains less that two words it is probably not relevant)
-    i = 0
-    for words in word_matrix:
-        if len(words) <= 2:
-            word_matrix.remove(words)
-            sentences.remove(sentences[i])
-        i += 1
+    # in case sentence contains more than 3 words, add it (if the sentence contains less than
+    # two words it is probably not relevant)
+        if len(words) > 3:
+            word_matrix.append(words)
+            original_length += len(words)
     
     return sentences, word_matrix, original_length
 

@@ -95,7 +95,6 @@ def calculate_textrank_similarty(sentences:list, word_matrix:list)->list:
             # divide the words in both sentences by the sentence lengths
             similarity = words_in_common / (log(len(words_1)) + log(len(words_2)))
             similarities[sentence_1][sentence_2] = similarity
-        
     return similarities
 
 
@@ -134,7 +133,11 @@ def calculate_lexrank_similarity(sentences:list, word_matrix:list, threshold:int
                 numerator += words_1.count(word) * words_2.count(word) * idf[word] ** 2
             # calculate the denominator
             denominator = (sqrt(sentence_denominators[sent_1]) * sqrt(sentence_denominators[sent_2]))
-            idf_cosine = numerator / denominator
+            if denominator == 0:
+                idf_cosine = 0
+            else:
+                idf_cosine = numerator / denominator
+                
             # if the sentences are similar enough, set similarity to 1 and increment the sentence degree
             if idf_cosine > threshold:
                 similarities[sent_1][sent_2] = 1
