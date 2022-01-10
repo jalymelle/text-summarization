@@ -77,12 +77,14 @@ def textrank_algorithm(sentences:list, word_matrix:list, limit_function, limit:i
     similarities = calculate_textrank_similarty(sentences, word_matrix)
     degree = np.zeros(len(sentences))
 
+    # divide by degree
     for similarity_row in range(len(similarities)):
         degree = sum(similarities[similarity_row])
         similarities[similarity_row] /= degree
 
     matrix = np.zeros((len(sentences), len(sentences)))
 
+    # calculate the weights
     for i in range(len(sentences)):
         for j in range(len(sentences)):
             total_score = (1-d) / len(word_matrix) + d * similarities[i][j]
@@ -112,6 +114,7 @@ def lexrank_algorithm(sentences:str, word_matrix:str, limit_function, limit:int,
 
     matrix, degrees = calculate_lexrank_similarity(sentences, word_matrix, threshold, category)
 
+    # divide each entry by the degree
     for i in range(len(sentences)):
         for j in range(len(sentences)):
             matrix[i][j] /= degrees[i]

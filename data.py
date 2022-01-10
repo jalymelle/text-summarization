@@ -52,6 +52,7 @@ def get_words(sentences:list, stem:str, remove_stopwords:bool)->list:
 
     word_matrix = []
     original_length = 0
+    sentences_to_remove = []
 
     for sentence in sentences:
         # split sentence into words
@@ -78,7 +79,13 @@ def get_words(sentences:list, stem:str, remove_stopwords:bool)->list:
         if len(words) > 3:
             word_matrix.append(words)
             original_length += len(words)
+        
+        else:
+            sentences_to_remove.append(sentence)
     
+    for sentence in sentences_to_remove:
+        sentences.remove(sentence)
+
     return sentences, word_matrix, original_length
 
 

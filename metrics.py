@@ -153,11 +153,11 @@ def calculate_lexrank_similarity(sentences:list, word_matrix:list, threshold:int
 def power_method(matrix:list, epsilon:int)->list:
     """Applies the power method."""
     p_vector = np.array([1.0 / len(matrix)] * len(matrix))
-    lambda_ = 1.0
+    delta = 1.0
 
-    while lambda_ > epsilon:
+    while delta > epsilon:
         next_p = np.dot(matrix.T, p_vector)
-        lambda_ = np.linalg.norm(np.subtract(next_p, p_vector))
+        delta = np.linalg.norm(np.subtract(next_p, p_vector))
         p_vector = next_p
 
     return p_vector
